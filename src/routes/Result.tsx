@@ -1,14 +1,11 @@
 // src/routes/Result.tsx
 import { useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import idverifierLogo from "../assets/idverifier-logo.png";
+import logo from "../assets/idverifier-logo.png";
 import "../styles/global.css";
 import "../styles/PageWithBackground.css";
 
-type LocationState = {
-  ageOver18: boolean;
-  similarityScore?: number;
-};
+type LocationState = { age: number };
 
 export default function Result() {
   const { state } = useLocation() as { state?: LocationState };
@@ -20,23 +17,19 @@ export default function Result() {
 
   if (!state) return null;
 
-  const { similarityScore } = state;
-
   return (
     <div className="page-wrapper">
       <div className="background-image" />
       <div className="modal">
-        <img src={idverifierLogo} alt="ID Verifier" className="logo" />
+        <img src={logo} alt="ID Verifier" className="logo" />
         <h1>Sorry</h1>
-        <p>You do not meet the minimum age requirement to enter.</p>
-        {similarityScore !== undefined && (
-          <p className="score">
-            Your liveness similarity score was{" "}
-            <strong>{similarityScore.toFixed(2)}%</strong>.
-          </p>
-        )}
+        <p>
+          Your age of {state.age} does not meet the minimum requirement of 18
+          years.
+        </p>
         <button
-          className="btn-secondary retry-button"
+          className="btn-secondary"
+          style={{ marginTop: "1.5rem" }}
           onClick={() => navigate("/")}
         >
           Try Again

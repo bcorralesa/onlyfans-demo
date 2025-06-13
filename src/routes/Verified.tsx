@@ -5,10 +5,7 @@ import idverifierLogo from "../assets/idverifier-logo.png";
 import "../styles/global.css";
 import "../styles/PageWithBackground.css";
 
-type LocationState = {
-  ageOver18: boolean;
-  similarityScore?: number;
-};
+type LocationState = { age: number };
 
 export default function Verified() {
   const { state } = useLocation() as { state?: LocationState };
@@ -20,7 +17,7 @@ export default function Verified() {
       return;
     }
     const timer = setTimeout(() => {
-      if (state.ageOver18) {
+      if (state.age >= 18) {
         window.location.replace("https://subseeker.co");
       } else {
         navigate("/result", { replace: true });
@@ -36,22 +33,9 @@ export default function Verified() {
       <div className="background-image" />
       <div className="modal">
         <img src={idverifierLogo} alt="ID Verifier" className="logo" />
-        <h2 style={{ marginBottom: "1rem", color: "var(--color-primary)" }}>
-          Age Verified
-        </h2>
-
-        <p style={{ marginBottom: "1rem" }}>
-          Your age has been successfully verified!
-          <br />
-          Redirecting you now… please wait.
-        </p>
-
-        {typeof state.similarityScore === "number" && (
-          <p style={{ marginBottom: "1rem" }}>
-            Your liveness similarity score was{" "}
-            <strong>{state.similarityScore.toFixed(2)}%</strong>.
-          </p>
-        )}
+        <h2>Age Verified</h2>
+        <p>Your age of {state.age} has been successfully verified.</p>
+        <p>Redirecting you now… please wait.</p>
       </div>
     </div>
   );

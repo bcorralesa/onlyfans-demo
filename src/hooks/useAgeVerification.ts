@@ -1,7 +1,7 @@
 // src/hooks/useAgeVerification.ts
 import { useState, useEffect, useRef } from "react";
 
-// Subscription key VITE_SUBS_KEY
+// Subscription key injected by Vite
 const SUBS_KEY = import.meta.env.VITE_SUBS_KEY!;
 
 // Endpoints (dev ↔ prod)
@@ -31,19 +31,18 @@ export function useAgeVerification() {
         },
         body: JSON.stringify({
           payload: {
-            documentVerification: {
-              portraitLivenessPassive: true,
-              ageOver18: true,
+            ageEstimation: {
+              livenessType: "passive",
             },
           },
         }),
       });
       if (!res.ok) throw new Error(`POST failed: ${res.status}`);
-      const body = (await res.json()) as { id: string; responseId: string };
-
-      // id para el QR
+      const body = (await res.json()) as {
+        id: string;
+        responseId: string;
+      };
       setId(body.id);
-      // responseId para el polling
       respIdRef.current = body.responseId;
     } catch (e: unknown) {
       const msg = e instanceof Error ? e.message : String(e);
@@ -60,16 +59,14 @@ export function useAgeVerification() {
         const res = await fetch(GET_URL(respIdRef.current!), {
           headers: { "Ocp-Apim-Subscription-Key": SUBS_KEY },
         });
-        // sigue pendiente si 404
         if (res.status === 404) return;
-
         const body = await res.json();
-        // si no vienen resultados aún, seguimos
-        if (!body.documentVerificationResults) return;
-
+        if (!body.ageEstimationResults) return;
         clearInterval(interval);
         window.dispatchEvent(
-          new CustomEvent("ageVerificationResult", { detail: body })
+          new CustomEvent("ageVerificationResult", {
+            detail: { age: body.ageEstimationResults.age },
+          })
         );
       } catch (e: unknown) {
         clearInterval(interval);
