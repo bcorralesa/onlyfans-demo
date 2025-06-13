@@ -32,9 +32,18 @@ export default function Verified() {
     <div className="page-wrapper">
       <div className="background-image" />
       <div className="modal">
-        <img src={idverifierLogo} alt="ID Verifier" className="logo" />
-        <h2>Age Verified</h2>
-        <p>Your age of {state.age} has been successfully verified.</p>
+        <img
+          src={idverifierLogo}
+          alt="ID Verifier"
+          className="logo"
+          style={{ marginBottom: "1rem" }}
+        />
+        <h2>Age Verified</h2> <br />
+        <p>
+          Based solely on liveness analysis, your age is estimated to be{" "}
+          <strong style={{ fontSize: "1.5rem" }}>{state.age}</strong> years.
+        </p>
+        <br />
         <p>Redirecting you now… please wait.</p>
       </div>
     </div>
